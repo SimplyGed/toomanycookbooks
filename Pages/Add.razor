@@ -1,0 +1,61 @@
+@page "/add"
+
+<h1>Add New</h1>
+
+<EditForm Model="@recipe" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label>
+        Name:
+        <InputText id="name" @bind-Value="recipe.Name" />
+    </label>
+
+    <div>
+        <label>
+            Book:
+            <InputText id="book" @bind-Value="recipe.Book" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Author:
+            <InputText id="author" @bind-Value="recipe.Author" />
+        </label>
+    </div>
+
+    <div>
+        <table class="table table-compact">
+            <tbody>
+                @for(var i = 0; i < recipe.Ingredients.Count(); i++)
+                {
+                    <tr>
+                        <td><InputText id="ingredient{i}" @bind-Value="recipe.Ingredients[i]" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <button type="submit">Save</button>
+</EditForm>
+
+@code 
+{
+    private Recipe recipe = new();
+
+    private class Recipe
+    {
+        public string? Name { get; set; }
+        public string? Book { get; set; }
+        public string? Author { get; set; }
+
+        public IList<string> Ingredients { get; set; } = new List<string>(1);
+    }
+
+    private void HandleValidSubmit()
+    {
+
+    }
+}
