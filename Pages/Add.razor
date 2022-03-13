@@ -1,61 +1,46 @@
 @page "/add"
 
+@inject NavigationManager NavigationManager
+@inject DataService DataService
+
 <h1>Add New</h1>
 
 <EditForm Model="@recipe" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <label>
-        Name:
-        <InputText id="name" @bind-Value="recipe.Name" />
-    </label>
-
-    <div>
-        <label>
-            Book:
-            <InputText id="book" @bind-Value="recipe.Book" />
-        </label>
+    <div class="form-group row">
+        <label for="name" class="col-sm-1 col-form-label">Name</label>
+        <InputText id="name" @bind-Value="recipe.Name" class="form-control col-sm-6" />
     </div>
 
-    <div>
-        <label>
-            Author:
-            <InputText id="author" @bind-Value="recipe.Author" />
-        </label>
+    <div class="form-group row">
+        <label for="book" class="col-sm-1 col-form-label">Book</label>
+        <InputText id="book" @bind-Value="recipe.Book" class="form-control col-sm-6" />
     </div>
 
-    <div>
-        <table class="table table-compact">
-            <tbody>
-                @for(var i = 0; i < recipe.Ingredients.Count(); i++)
-                {
-                    <tr>
-                        <td><InputText id="ingredient{i}" @bind-Value="recipe.Ingredients[i]" /></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="form-group row">
+        <label for="author" class="col-sm-1 col-form-label">Author</label>
+        <InputText id="author" @bind-Value="recipe.Author" class="form-control col-sm-6" />
     </div>
-    
-    <button type="submit">Save</button>
+
+    <div class="form-group row">
+        <label for="ingredients" class="col-sm-1 col-form-label">Ingredients</label>
+        <InputText id="ingredients" @bind-Value="recipe.Ingredients" class="form-control col-sm-6" />
+    </div>
+
+    <button class="btn btn-success" type="submit">Save</button>
 </EditForm>
 
-@code 
+@code
 {
     private Recipe recipe = new();
 
-    private class Recipe
-    {
-        public string? Name { get; set; }
-        public string? Book { get; set; }
-        public string? Author { get; set; }
-
-        public IList<string> Ingredients { get; set; } = new List<string>(1);
-    }
-
     private void HandleValidSubmit()
     {
-
+        if (DataService.Save(recipe))
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
 }
