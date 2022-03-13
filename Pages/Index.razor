@@ -23,7 +23,7 @@
                 <td>@r.Name</td>
                 <td>@r.Book</td>
                 <td>@r.Author</td>
-                <td>@string.Join(',', r.Ingredients)</td>
+                <td>@string.Join(',', r.Ingredients.Select(i => i.Name))</td>
             </tr>
         }
     </tbody>

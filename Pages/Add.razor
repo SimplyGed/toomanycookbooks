@@ -24,9 +24,37 @@
         <InputText id="author" @bind-Value="recipe.Author" class="form-control col-sm-6" />
     </div>
 
-    <div class="form-group row">
-        <label for="ingredients" class="col-sm-1 col-form-label">Ingredients</label>
-        <InputText id="ingredients" @bind-Value="recipe.Ingredients" class="form-control col-sm-6" />
+    <div class="form-group">
+        <div>
+            <button id="add-ingredient" type="button" class="btn btn-success" @onclick="AddIngredient">Add</button>
+        </div>
+
+        <table id="ingredients" class="table table-compact">
+            <thead>
+                <tr>
+                    <th>Ingredients</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!recipe.Ingredients.Any())
+                {
+                    <tr>
+                        <td>There are no ingredients for this recipe.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var (item, index) in recipe.Ingredients.Select((r, i) => (r,i)))
+                    {
+                        <tr>
+                            <td>
+                                <InputText id="@($"ingredient{index}")" @bind-Value="item.Name" />
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
     </div>
 
     <button class="btn btn-success" type="submit">Save</button>
@@ -35,6 +63,11 @@
 @code
 {
     private Recipe recipe = new();
+
+    public void AddIngredient()
+    {
+        recipe.Ingredients.Add(new());
+    }
 
     private void HandleValidSubmit()
     {
