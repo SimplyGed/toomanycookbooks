@@ -5,7 +5,7 @@
 
 <h1>Add New</h1>
 
-<EditForm Model="@recipe" OnValidSubmit="@HandleValidSubmit">
+<EditForm EditContext="@editContext" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -57,16 +57,36 @@
         </table>
     </div>
 
-    <button class="btn btn-success" type="submit">Save</button>
+    <button id="save" class="btn btn-success" type="submit" disabled="@formInvalid">Save</button>
 </EditForm>
 
 @code
 {
     private Recipe recipe = new();
 
+    private EditContext? editContext;
+    private bool formInvalid = true;
+
+    protected override Task OnInitializedAsync()
+    {
+        editContext = new(recipe);
+        editContext.OnFieldChanged += HandleFieldChanged;
+        
+        return base.OnInitializedAsync();
+    }
+    
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext is not null)
+        {
+            formInvalid = !editContext.Validate();
+            StateHasChanged();
+        }
+    }
+
     public void AddIngredient()
     {
-        recipe.Ingredients.Add(new());
+        ((Recipe)editContext!.Model).Ingredients.Add(new());
     }
 
     private void HandleValidSubmit()

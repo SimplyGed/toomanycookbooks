@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace toomanycookbooks.Services
 {
     public class Recipe
@@ -12,8 +14,11 @@ namespace toomanycookbooks.Services
             Ingredients.AddRange(ingredients.Select(i => new Ingredient{ Name = i }));
         }
 
+        [Required]
         public string? Name { get; set; }
+        [Required]
         public string? Book { get; set; }
+        [Required]
         public string? Author { get; set; }
 
         public List<Ingredient> Ingredients { get; set; } = new();
