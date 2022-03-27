@@ -10,6 +10,7 @@ variables:
   Major: 0
   Minor: 0
 
+
 name: $(Major).$(Minor).$(Rev:r)
 
 pool:
@@ -46,6 +47,25 @@ stages:
         ArtifactName: 'app'
         publishLocation: 'Container'
 
-#- stage: Deploy
-#  displayName: Deploy stage
-#  dependsOn: Build
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  variables:
+  - group: StaticWebAppDev
+  jobs:
+  - job:
+    displayName: Deploy Static Web App
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'app'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+    - task: AzureStaticWebApp@0
+      displayName: Deploy
+      inputs:
+        app_location: '$(System.ArtifactsDirectory)'
+        skip_app_build: true
+        azure_static_web_apps_api_token: '$(static-web-app-token)'
