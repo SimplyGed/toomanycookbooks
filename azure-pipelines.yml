@@ -28,20 +28,23 @@ stages:
       inputs:
         command: 'build'
         projects: '**/*.csproj'
+        arguments: --configuration Release
 
-    - task: DockerInstaller@0
-      displayName: Add Docker
+    - task: DotNetCoreCLI@2
+      displayName: Publish app
       inputs:
-        dockerVersion: '17.09.0-ce'
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/*.csproj'
+        modifyOutputPath: false
+        arguments: --no-build --configuration Release -o $(Build.ArtifactStagingDirectory)
 
-    - task: Docker@2
-      displayName: Docker Build and Push
+    - task: PublishBuildArtifacts@1
+      displayName: Publish artifact
       inputs:
-        containerRegistry: 'TooManyCookBooks ACR Dev'
-        repository: 'toomanycookbooks-dev'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: $(Build.BuildNumber)
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'app'
+        publishLocation: 'Container'
 
 #- stage: Deploy
 #  displayName: Deploy stage
