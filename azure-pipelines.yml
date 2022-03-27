@@ -10,28 +10,39 @@ variables:
   Major: 0
   Minor: 0
 
-name: $(Major).$(Minor).$(Rev:rr)
+name: $(Major).$(Minor).$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: DotNetCoreCLI@2
+stages:
+- stage: Build
   displayName: Build
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
+  
+  jobs:
+  - job:
+    displayName: Build
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
 
-- task: DockerInstaller@0
-  displayName: Add Docker
-  inputs:
-    dockerVersion: '17.09.0-ce'
+    - task: DockerInstaller@0
+      displayName: Add Docker
+      inputs:
+        dockerVersion: '17.09.0-ce'
 
-- task: Docker@2
-  displayName: Docker Build and Push
-  inputs:
-    containerRegistry: 'TooManyCookBooks ACR Dev'
-    repository: 'toomanycookbooks-dev'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    tags: $(Build.BuildNumber)
+    - task: Docker@2
+      displayName: Docker Build and Push
+      inputs:
+        containerRegistry: 'TooManyCookBooks ACR Dev'
+        repository: 'toomanycookbooks-dev'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: $(Build.BuildNumber)
+
+#- stage: Deploy
+#  displayName: Deploy stage
+#  dependsOn: Build
