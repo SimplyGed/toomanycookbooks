@@ -10,7 +10,7 @@ variables:
   Major: 0
   Minor: 0
 
-name: $(Major).$(Minor).($Rev:rr)
+name: $(Major).$(Minor).$(Rev:rr)
 
 pool:
   vmImage: ubuntu-latest
