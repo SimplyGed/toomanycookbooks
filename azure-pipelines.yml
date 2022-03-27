@@ -6,6 +6,12 @@
 trigger:
 - main
 
+variables:
+  Major: 0
+  Minor: 0
+
+name: $(Major).$(Minor).($Rev:rr)
+
 pool:
   vmImage: ubuntu-latest
 
@@ -15,4 +21,16 @@ steps:
   inputs:
     command: 'build'
     projects: '**/*.csproj'
-    
+
+- task: DockerInstaller@0
+  displayName: Add Docker
+  inputs:
+    dockerVersion: '17.09.0-ce'
+
+- task: Docker@2
+  displayName: Build Docker image
+  inputs:
+    repository: 'toomanycookbooksdev.azurecr.io'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: $(Build.BuildNumber)
