@@ -63,11 +63,11 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'app'
-        downloadPath: '$(System.DefaultWorkingDirectory)/app'
+        downloadPath: '$(System.DefaultWorkingDirectory)'
 
     - task: AzureStaticWebApp@0
       displayName: Deploy app
       inputs:
-        app_location: '$(System.DefaultWorkingDirectory)/app'
+        app_location: '/app'
         skip_app_build: true
         azure_static_web_apps_api_token: '$(static-web-app-token)'
