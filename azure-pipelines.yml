@@ -38,6 +38,7 @@ stages:
         publishWebProjects: false
         projects: '**/*.csproj'
         modifyOutputPath: false
+        zipAfterPublish: false
         arguments: --no-build --configuration Release -o $(Build.ArtifactStagingDirectory)
 
     - task: PublishBuildArtifacts@1
@@ -57,15 +58,16 @@ stages:
     displayName: Deploy Static Web App
     steps:
     - task: DownloadBuildArtifacts@1
+      displayName: Download artifact
       inputs:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'app'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        downloadPath: '$(System.DefaultWorkingDirectory)/app'
 
     - task: AzureStaticWebApp@0
-      displayName: Deploy
+      displayName: Deploy app
       inputs:
-        app_location: '$(System.ArtifactsDirectory)'
+        app_location: '$(System.DefaultWorkingDirectory)/app'
         skip_app_build: true
         azure_static_web_apps_api_token: '$(static-web-app-token)'
