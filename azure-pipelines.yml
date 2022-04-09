@@ -10,7 +10,6 @@ variables:
   Major: 0
   Minor: 0
 
-
 name: $(Major).$(Minor).$(Rev:r)
 
 pool:
@@ -48,26 +47,30 @@ stages:
         ArtifactName: 'app'
         publishLocation: 'Container'
 
+    - task: Docker@2
+      displayName: Build and push to Docker
+      inputs:
+        containerRegistry: 'TooManyCookBooks ACR Dev'
+        repository: 'toomanycookbooks-dev'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(Build.BuildNumber)'
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
-  variables:
-  - group: StaticWebAppDev
+
   jobs:
   - job:
-    displayName: Deploy Static Web App
     steps:
-    - task: DownloadBuildArtifacts@1
-      displayName: Download artifact
-      inputs:
-        buildType: 'current'
-        downloadType: 'single'
-        artifactName: 'app'
-        downloadPath: '$(System.DefaultWorkingDirectory)'
-
-    - task: AzureStaticWebApp@0
-      displayName: Deploy app
-      inputs:
-        app_location: '/app/wwwroot'
-        skip_app_build: true
-        azure_static_web_apps_api_token: '$(static-web-app-token)'
+      - task: AzureRmWebAppDeployment@4
+        displayName: Deploy Web App
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'Visual Studio Premium with MSDN(bbe8e064-d490-470f-8e8a-485bd7227583)'
+          appType: 'webAppContainer'
+          WebAppName: 'toomanycookbooks'
+          DockerNamespace: 'toomanycookbooksdev.azurecr.io'
+          DockerRepository: 'toomanycookbooks-dev'
+          DockerImageTag: $(Build.BuildNumber)
+          
