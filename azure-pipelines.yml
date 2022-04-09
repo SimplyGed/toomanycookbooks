@@ -63,6 +63,11 @@ stages:
   jobs:
   - job:
     steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'TooManyCookBooks ACR Dev'
+          command: 'login'
+
       - task: AzureRmWebAppDeployment@4
         displayName: Deploy Web App
         inputs:
