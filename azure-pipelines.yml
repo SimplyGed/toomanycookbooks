@@ -69,7 +69,7 @@ stages:
           ConnectionType: 'AzureRM'
           azureSubscription: 'Visual Studio Premium with MSDN(bbe8e064-d490-470f-8e8a-485bd7227583)'
           appType: 'webAppContainer'
-          WebAppName: 'toomanycookbooks'
+          WebAppName: 'toomanycookbooks-dev'
           DockerNamespace: 'toomanycookbooksdev.azurecr.io'
           DockerRepository: 'toomanycookbooks-dev'
           DockerImageTag: $(Build.BuildNumber)
