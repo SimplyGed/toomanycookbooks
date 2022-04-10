@@ -63,19 +63,12 @@ stages:
   jobs:
   - job:
     steps:
-      - task: Docker@2
-        inputs:
-          containerRegistry: 'TooManyCookBooks ACR Dev'
-          command: 'login'
-
       - task: AzureRmWebAppDeployment@4
-        displayName: Deploy Web App
         inputs:
           ConnectionType: 'AzureRM'
           azureSubscription: 'Visual Studio Premium with MSDN(bbe8e064-d490-470f-8e8a-485bd7227583)'
           appType: 'webAppContainer'
           WebAppName: 'toomanycookbooks-dev'
-          DockerNamespace: 'toomanycookbooksdev'
+          DockerNamespace: 'toomanycookbooksdev.azurecr.io'
           DockerRepository: 'toomanycookbooks-dev'
-          DockerImageTag: $(Build.BuildNumber)
-          
+          DockerImageTag: '$(Build.BuildNumber)'
