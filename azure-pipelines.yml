@@ -55,20 +55,3 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: '$(Build.BuildNumber)'
-
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
-
-  jobs:
-  - job:
-    steps:
-      - task: AzureRmWebAppDeployment@4
-        inputs:
-          ConnectionType: 'AzureRM'
-          azureSubscription: 'Visual Studio Premium with MSDN(bbe8e064-d490-470f-8e8a-485bd7227583)'
-          appType: 'webAppContainer'
-          WebAppName: 'toomanycookbooks-dev'
-          DockerNamespace: 'toomanycookbooksdev.azurecr.io'
-          DockerRepository: 'toomanycookbooks-dev'
-          DockerImageTag: '$(Build.BuildNumber)'
