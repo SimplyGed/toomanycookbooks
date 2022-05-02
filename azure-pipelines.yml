@@ -22,7 +22,6 @@ stages:
   jobs:
   - job:
     displayName: Build
-
     steps:
     - task: DotNetCoreCLI@2
       displayName: Build
@@ -48,29 +47,11 @@ stages:
         ArtifactName: 'app'
         publishLocation: 'Container'
 
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
-
-  variables:
-  - group: StaticWebAppDev
-
-  jobs:
-  - job:
-    displayName: Deploy Static Web App
-
-    steps:
-    - task: DownloadBuildArtifacts@1
-      displayName: Download artifact
+    - task: Docker@2
+      displayName: Build and push to Docker
       inputs:
-        buildType: 'current'
-        downloadType: 'single'
-        artifactName: 'app'
-        downloadPath: '$(System.DefaultWorkingDirectory)'
-
-    - task: AzureStaticWebApp@0
-      displayName: Deploy app
-      inputs:
-        app_location: '/app/wwwroot'
-        skip_app_build: true
-        azure_static_web_apps_api_token: '$(static-web-app-token)'
+        containerRegistry: 'TooManyCookBooks ACR Dev'
+        repository: 'toomanycookbooks-dev'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(Build.BuildNumber)'
