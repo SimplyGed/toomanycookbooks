@@ -38,8 +38,8 @@
         NavigationManager.NavigateTo("add");
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _recipes = DataService.GetRecipes();
+        _recipes = await DataService.GetRecipesAsync();
     }
 }

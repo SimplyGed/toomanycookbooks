@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace toomanycookbooks.Services
 {
@@ -11,8 +12,10 @@ namespace toomanycookbooks.Services
             Name = name;
             Book = book;
             Author = author;
-            Ingredients.AddRange(ingredients.Select(i => new Ingredient{ Name = i }));
+            Ingredients.AddRange(ingredients.Select(i => new Ingredient { Name = i }));
         }
+
+        public Guid Id { get; set; }
 
         [Required]
         public string? Name { get; set; }
@@ -24,30 +27,46 @@ namespace toomanycookbooks.Services
         public List<Ingredient> Ingredients { get; set; } = new();
     }
 
-    public class Ingredient 
+    public class Ingredient
     {
         public string Name { get; set; } = "";
     }
 
     public class DataService
     {
-        private List<Recipe> _recipes = new List<Recipe>
-            {
-                new Recipe("Recipe1", "Book1", "Author1", new[] { "Ingredient1,Ingredient2" }),
-                new Recipe("Recipe2", "Book2", "Author2", new[] { "Ingredient2,Ingredient3" }),
-                new Recipe("Recipe3", "Book1", "Author1", new[] { "Ingredient3,Ingredient4" }),
-                new Recipe("Recipe4", "Book3", "Author3", new[] { "Ingredient4,Ingredient1" })
-            };
+        private readonly Uri _api;
+        private readonly IHttpClientFactory _factory;
 
-        public IEnumerable<Recipe> GetRecipes()
+        private static JsonSerializerOptions _options = new JsonSerializerOptions
         {
-            return _recipes;
+            PropertyNameCaseInsensitive = true
+        };
+
+        public DataService(IConfiguration config, IHttpClientFactory factory)
+        {
+            _api = new Uri(config["Api"]);
+            _factory = factory;
+        }
+
+        public async Task<IEnumerable<Recipe>> GetRecipesAsync()
+        {
+            var url = new Uri(_api, "recipes");
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync(url);
+
+            if (response != null && response.IsSuccessStatusCode)
+            {
+                var data = await JsonSerializer.DeserializeAsync<IEnumerable<Recipe>>(response.Content.ReadAsStream(), _options);
+
+                return data ?? Enumerable.Empty<Recipe>();
+            }
+
+            return Enumerable.Empty<Recipe>(); ;
         }
 
         public bool Save(Recipe recipe)
         {
-            _recipes.Add(recipe);
-
             return true;
         }
     }
