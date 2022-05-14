@@ -1,2 +1,1 @@
-#!/bin/bash
-envsubst < ./wwwroot/appsettings.json > ./wwwroot/appsettings.Production.json
+envsubst < /usr/share/nginx/html/appsettings.template.json > /usr/share/nginx/html/appsettings.json
