@@ -89,9 +89,9 @@
         ((Recipe)editContext!.Model).Ingredients.Add(new());
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        if (DataService.Save(recipe))
+        if (await DataService.SaveAsync(recipe))
         {
             NavigationManager.NavigateTo("/");
         }

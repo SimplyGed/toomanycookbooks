@@ -5,17 +5,7 @@ namespace toomanycookbooks.Services
 {
     public class Recipe
     {
-        public Recipe() { }
-
-        public Recipe(string name, string book, string author, string[] ingredients)
-        {
-            Name = name;
-            Book = book;
-            Author = author;
-            Ingredients.AddRange(ingredients.Select(i => new Ingredient { Name = i }));
-        }
-
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         public string? Name { get; set; }
@@ -62,12 +52,19 @@ namespace toomanycookbooks.Services
                 return data ?? Enumerable.Empty<Recipe>();
             }
 
-            return Enumerable.Empty<Recipe>(); ;
+            return Enumerable.Empty<Recipe>();
         }
 
-        public bool Save(Recipe recipe)
+        public async Task<bool> SaveAsync(Recipe recipe)
         {
-            return true;
+            var url = new Uri(_api, "recipes");
+            var client = _factory.CreateClient();
+
+            var json = JsonSerializer.Serialize(recipe);
+            var content = new StringContent(json);
+            var response = await client.PostAsync(url, content);
+
+            return response.IsSuccessStatusCode;
         }
     }
 }
