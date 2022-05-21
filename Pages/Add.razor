@@ -1,7 +1,8 @@
 @page "/add"
+@using Services.Models
 
 @inject NavigationManager NavigationManager
-@inject DataService DataService
+@inject RecipeService RecipeService
 
 <h1>Add New</h1>
 
@@ -91,7 +92,7 @@
 
     private async Task HandleValidSubmit()
     {
-        if (await DataService.SaveAsync(recipe))
+        if (await RecipeService.SaveAsync(recipe))
         {
             NavigationManager.NavigateTo("/");
         }
