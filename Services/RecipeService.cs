@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
+using toomanycookbooks.Services.Dtos;
 using toomanycookbooks.Services.Models;
 
 namespace toomanycookbooks.Services
@@ -11,7 +12,7 @@ namespace toomanycookbooks.Services
         {
         }
 
-        public async Task<IEnumerable<Recipe>> GetRecipesAsync()
+        public async Task<IEnumerable<RecipeDto>> GetRecipesAsync()
         {
             var url = new Uri(API, "recipes");
             var client = _factory.CreateClient();
@@ -20,12 +21,12 @@ namespace toomanycookbooks.Services
 
             if (response != null && response.IsSuccessStatusCode)
             {
-                var data = await JsonSerializer.DeserializeAsync<IEnumerable<Recipe>>(response.Content.ReadAsStream(), _options);
+                var data = await JsonSerializer.DeserializeAsync<IEnumerable<RecipeDto>>(response.Content.ReadAsStream(), _options);
 
-                return data ?? Enumerable.Empty<Recipe>();
+                return data ?? Enumerable.Empty<RecipeDto>();
             }
 
-            return Enumerable.Empty<Recipe>();
+            return Enumerable.Empty<RecipeDto>();
         }
 
         public async Task<bool> SaveAsync(Recipe recipe)

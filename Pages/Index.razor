@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Services.Models
+@using Services.Dtos
 
 @inject NavigationManager NavigationManager
 @inject RecipeService RecipeService
@@ -22,9 +23,9 @@
         {
             <tr>
                 <td>@r.Name</td>
-                <td>Book</td>
-                <td>Author</td>
-                <td>@string.Join(',', r.Ingredients.Select(i => i.Name))</td>
+                <td>@r.Book</td>
+                <td>@r.Author</td>
+                <td>@string.Join(',', r.Ingredients)</td>
             </tr>
         }
     </tbody>
@@ -32,7 +33,7 @@
 
 @code 
 {
-    private IEnumerable<Recipe> _recipes { get;set; } = Enumerable.Empty<Recipe>();
+    private IEnumerable<RecipeDto> _recipes { get; set; } = Enumerable.Empty<RecipeDto>();
 
     private void NavigateToAdd()
     {
