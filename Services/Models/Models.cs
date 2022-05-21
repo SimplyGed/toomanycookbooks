@@ -9,9 +9,7 @@ namespace toomanycookbooks.Services.Models
         [Required]
         public string? Name { get; set; }
         [Required]
-        public string? Book { get; set; }
-        [Required]
-        public string? Author { get; set; }
+        public Guid BookId { get; set; }
 
         public List<Ingredient> Ingredients { get; set; } = new();
     }

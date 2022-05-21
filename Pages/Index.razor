@@ -1,7 +1,8 @@
 ﻿@page "/"
+@using Services.Models
 
 @inject NavigationManager NavigationManager
-@inject DataService DataService
+@inject RecipeService RecipeService
 
 <h1>Recipes</h1>
 
@@ -21,8 +22,8 @@
         {
             <tr>
                 <td>@r.Name</td>
-                <td>@r.Book</td>
-                <td>@r.Author</td>
+                <td>Book</td>
+                <td>Author</td>
                 <td>@string.Join(',', r.Ingredients.Select(i => i.Name))</td>
             </tr>
         }
@@ -40,6 +41,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _recipes = await DataService.GetRecipesAsync();
+        _recipes = await RecipeService.GetRecipesAsync();
     }
 }

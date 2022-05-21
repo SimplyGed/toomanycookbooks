@@ -3,6 +3,7 @@
 
 @inject NavigationManager NavigationManager
 @inject RecipeService RecipeService
+@inject BookService BookService
 
 <h1>Add New</h1>
 
@@ -17,12 +18,13 @@
 
     <div class="form-group row">
         <label for="book" class="col-sm-1 col-form-label">Book</label>
-        <InputText id="book" @bind-Value="recipe.Book" class="form-control col-sm-6" />
-    </div>
-
-    <div class="form-group row">
-        <label for="author" class="col-sm-1 col-form-label">Author</label>
-        <InputText id="author" @bind-Value="recipe.Author" class="form-control col-sm-6" />
+        <InputSelect id="book" @bind-Value="recipe.BookId">
+                <option value="">Select a book...</option>
+            @foreach (var b in books.OrderBy(b => b.Title))
+            {
+                <option value="@b.Id">@b.Title</option>
+            }
+        </InputSelect>
     </div>
 
     <div class="form-group">
@@ -63,17 +65,21 @@
 
 @code
 {
+    private IEnumerable<Book> books = Enumerable.Empty<Book>();
+
     private Recipe recipe = new();
 
     private EditContext? editContext;
     private bool formInvalid = true;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         editContext = new(recipe);
         editContext.OnFieldChanged += HandleFieldChanged;
         
-        return base.OnInitializedAsync();
+        books = await BookService.GetBooksAsync();
+
+        await base.OnInitializedAsync();
     }
     
     private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
