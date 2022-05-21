@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
+using System.Text;
 using System.Text.Json;
 
 namespace toomanycookbooks.Services
@@ -61,7 +63,7 @@ namespace toomanycookbooks.Services
             var client = _factory.CreateClient();
 
             var json = JsonSerializer.Serialize(recipe);
-            var content = new StringContent(json);
+            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
             var response = await client.PostAsync(url, content);
 
             return response.IsSuccessStatusCode;
